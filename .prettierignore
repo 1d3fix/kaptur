@@ -1,0 +1,11 @@
+.wxt
+.output
+node_modules
+dist
+package-lock.json
+stats.html
+stats-*.json
+public/icon
+.claude
+KAPTUR_SPEC.md
+BACKLOG.md
