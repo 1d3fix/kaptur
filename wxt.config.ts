@@ -9,7 +9,7 @@ export default defineConfig({
     description:
       'Capture, annotate and organize your OSINT investigations. 100% local, zero telemetry.',
     version: '1.0.0',
-    author: { email: 'contact.kaptur@proton.me' },
+
     homepage_url: 'https://github.com/1d3fix/kaptur',
     permissions: ['storage', 'tabs', 'activeTab', 'scripting', 'downloads'],
     host_permissions: ['<all_urls>'],
