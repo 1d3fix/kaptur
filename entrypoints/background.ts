@@ -8,6 +8,7 @@ import {
   captureWindowAsBlob,
   isCapturableUrl,
 } from '@/lib/capture/visible';
+import { captureFullPage } from '@/lib/fullPageCapture';
 import {
   createCapture,
   markMediaCollected,
@@ -24,7 +25,7 @@ import type {
   RegionRectCss,
 } from '@/lib/messaging/types';
 
-type CaptureType = 'visible' | 'region';
+type CaptureType = 'visible' | 'region' | 'full-page';
 
 interface PersistCaptureInput {
   sessionId: number;
@@ -76,6 +77,7 @@ function parseMessage(raw: unknown): KapturMessage | null {
   switch (m['type']) {
     case 'CAPTURE_VISIBLE':
     case 'CAPTURE_REGION_START':
+    case 'CAPTURE_FULL_PAGE':
       return isSessionId(m['sessionId'])
         ? (m as unknown as KapturMessage)
         : null;
@@ -116,6 +118,8 @@ async function handleMessage(
   switch (message.type) {
     case 'CAPTURE_VISIBLE':
       return handleCaptureVisible(message.sessionId);
+    case 'CAPTURE_FULL_PAGE':
+      return handleCaptureFullPage(message.sessionId, message.scrollDelay);
     case 'CAPTURE_REGION_START':
       return handleCaptureRegionStart(message.sessionId);
     case 'CAPTURE_REGION_COMPLETE':
@@ -145,6 +149,19 @@ async function handleCaptureVisible(
   return persistCapture({
     sessionId,
     captureType: 'visible',
+    blob,
+    tab,
+  });
+}
+
+async function handleCaptureFullPage(
+  sessionId: number,
+  scrollDelay?: number,
+): Promise<KapturResponse<CaptureCreatedPayload>> {
+  const { blob, tab } = await captureFullPage({ scrollDelay });
+  return persistCapture({
+    sessionId,
+    captureType: 'full-page',
     blob,
     tab,
   });

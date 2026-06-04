@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Camera, Crop, ExternalLink } from 'lucide-react';
+import { Camera, Crop, ExternalLink, ScrollText } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
@@ -26,7 +26,10 @@ function App() {
   const canCapture = hydrated && activeSessionId !== null && !busy;
 
   async function runCapture(
-    message: Extract<KapturMessage, { type: 'CAPTURE_VISIBLE' }>,
+    message: Extract<
+      KapturMessage,
+      { type: 'CAPTURE_VISIBLE' | 'CAPTURE_FULL_PAGE' }
+    >,
   ) {
     setBusy(true);
     try {
@@ -45,6 +48,14 @@ function App() {
     if (activeSessionId === null) return;
     void runCapture({
       type: 'CAPTURE_VISIBLE',
+      sessionId: activeSessionId,
+    });
+  }
+
+  function handleCaptureFullPage() {
+    if (activeSessionId === null) return;
+    void runCapture({
+      type: 'CAPTURE_FULL_PAGE',
       sessionId: activeSessionId,
     });
   }
@@ -116,6 +127,21 @@ function App() {
           >
             <Camera className="mr-2 h-4 w-4" />
             Capture visible
+          </Button>
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={handleCaptureFullPage}
+            disabled={!canCapture}
+            className="justify-start"
+            title={
+              activeSessionId === null
+                ? 'Select an active session'
+                : 'Capture the full scrollable page'
+            }
+          >
+            <ScrollText className="mr-2 h-4 w-4" />
+            Capture full page
           </Button>
           <Button
             size="sm"
