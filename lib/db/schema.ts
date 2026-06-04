@@ -20,7 +20,7 @@ export interface Capture {
   domain: string;
   pageTitle: string;
   capturedAt: Date;
-  captureType: 'visible' | 'region';
+  captureType: 'visible' | 'region' | 'full-page';
 
   imageBlob: Blob;
   rawImageBlob: Blob;
